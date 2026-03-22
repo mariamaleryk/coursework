@@ -1,0 +1,89 @@
+.modal-content.large-modal {
+    width: 80vw;
+    max-width: 1200px;
+    height: 85vh;
+    max-height: 85vh;
+    overflow-y: auto;
+    position: relative;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+}
+
+.close-button {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: #94a3b8;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0;
+    transition: color 0.2s ease;
+    z-index: 10;
+}
+
+.close-button:hover {
+    color: #e74c3c;
+    background: transparent;
+}
+
+.modal-body-split {
+    display: flex;
+    gap: 4vw;
+    margin-top: 10px;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.modal-left-settings {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-right: 20px;
+    border-right: 1px solid #e2e8f0;
+    overflow-y: auto;
+}
+
+.modal-right-preview {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8fafc;
+    border: 2px dashed #cbd5e1;
+    border-radius: 8px;
+    position: relative;
+    overflow: auto;
+    padding: 2vw;
+}
+
+.preview-label {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 0.85rem;
+    color: #94a3b8;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.form-group select, .form-group input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: inherit;
+}
+
+.settings-section-title {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: #64748b;
+    margin-top: 10px;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 5px;
+}

@@ -1,0 +1,66 @@
+.instrument-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.instrument-external-title {
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 0 2px 5px rgba(0,0,0,0.8);
+}
+
+.gauge-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #0d1117;
+    border-radius: 50%;
+    cursor: grab;
+    border: 6px solid #b1b3b5;
+    box-shadow:
+            0 8px 25px rgba(0,0,0,0.6),
+            inset 0 0 30px rgba(0,0,0,1);
+    user-select: none;
+    overflow: hidden;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.gauge-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: -10px;
+}
+
+.gauge-display-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    bottom: 25px;
+    z-index: 10;
+}
+
+.gauge-value-display {
+    font-size: 32px;
+    font-weight: bold;
+    color: #fff;
+    line-height: 1;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.gauge-unit {
+    font-size: 14px;
+    color: #a1a1a1;
+    font-weight: normal;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}

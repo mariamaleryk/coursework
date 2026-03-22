@@ -15,10 +15,18 @@ public abstract class Instrument {
     private int x;
     private int y;
 
-    // НОВІ ПОЛЯ ВІЗУАЛІЗАЦІЇ
     private String size = "medium";
     private String colorTheme = "light";
     private String fontFamily = "standard";
+
+    private int width = 300;
+    private int height = 100;
+
+    public int getWidth() { return width; }
+    public void setWidth(int width) { this.width = width; }
+
+    public int getHeight() { return height; }
+    public void setHeight(int height) { this.height = height; }
 
     public Instrument() {
         this.id = UUID.randomUUID().toString();
