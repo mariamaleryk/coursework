@@ -37,15 +37,15 @@ const DialGauge = ({ name = 'Прилад', min = 0, max = 100, value = 0, unit 
     for (let i = 0; i <= majorTicksCount; i++) {
         const tickAngle = startAngle + (i * (totalSweep / majorTicksCount));
         const labelValue = Math.round(numMin + (i * range / majorTicksCount));
-
         const pStart = polarToCartesian(tickAngle, radius);
         const pEnd = polarToCartesian(tickAngle, radius - 12);
 
-        ticks.push(<line key={`major-${i}`} x1={pStart.x} y1={pStart.y} x2={pEnd.x} y2={pEnd.y} stroke="white" strokeWidth="2.5" strokeLinecap="round" />);
+        ticks.push(<line key={`major-${i}`} x1={pStart.x} y1={pStart.y} x2={pEnd.x} y2={pEnd.y} stroke="var(--text-main)" strokeWidth="2.5" strokeOpacity="0.8" strokeLinecap="round" />);
 
         const pText = polarToCartesian(tickAngle, radius - 26);
+
         tickLabels.push(
-            <text key={`label-${i}`} x={pText.x} y={pText.y + 4} fontSize="12" textAnchor="middle" fill="white" fontWeight="bold">{labelValue}</text>
+            <text key={`label-${i}`} x={pText.x} y={pText.y + 4} fontSize="12" textAnchor="middle" fill="var(--text-main)" fillOpacity="0.8" fontWeight="bold">{labelValue}</text>
         );
 
         if (i < majorTicksCount) {
@@ -53,7 +53,7 @@ const DialGauge = ({ name = 'Прилад', min = 0, max = 100, value = 0, unit 
                 const minorAngle = tickAngle + (j * (totalSweep / majorTicksCount / minorTicksPerMajor));
                 const p1 = polarToCartesian(minorAngle, radius);
                 const p2 = polarToCartesian(minorAngle, radius - 6);
-                ticks.push(<line key={`minor-${i}-${j}`} x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke="#8a8d91" strokeWidth="1" strokeLinecap="round" />);
+                ticks.push(<line key={`minor-${i}-${j}`} x1={p1.x} y1={p1.y} x2={p2.x} y2={p2.y} stroke="var(--text-main)" strokeWidth="1" strokeOpacity="0.4" strokeLinecap="round" />);
             }
         }
     }
@@ -68,7 +68,7 @@ const DialGauge = ({ name = 'Прилад', min = 0, max = 100, value = 0, unit 
         }}>
             <div className="instrument-wrapper" style={{
                 transform: `scale(${scale})`,
-                transformOrigin: 'top center',
+                transformOrigin: 'top left',
                 position: 'absolute',
                 top: 0,
                 left: 0,
@@ -92,8 +92,8 @@ const DialGauge = ({ name = 'Прилад', min = 0, max = 100, value = 0, unit 
                         </svg>
 
                         <div className="gauge-display-block">
-                            <div className="gauge-value-display">{safeValue}</div>
-                            <div className="gauge-unit">{unit}</div>
+                            <div className="gauge-value-display" style={{ color: 'var(--text-main)' }}>{safeValue}</div>
+                            <div className="gauge-unit" style={{ color: 'var(--text-main)' }}>{unit}</div>
                         </div>
                     </div>
                 </div>

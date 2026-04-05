@@ -2,6 +2,9 @@ package lpnu.backend.models;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
@@ -21,6 +24,9 @@ public abstract class Instrument {
 
     private int width = 300;
     private int height = 100;
+
+    private List<Range> ranges = new ArrayList<>();
+    private String linkedInstrumentId;
 
     public int getWidth() { return width; }
     public void setWidth(int width) { this.width = width; }
@@ -49,4 +55,10 @@ public abstract class Instrument {
     public void setColorTheme(String colorTheme) { this.colorTheme = colorTheme; }
     public String getFontFamily() { return fontFamily; }
     public void setFontFamily(String fontFamily) { this.fontFamily = fontFamily; }
+
+    public List<Range> getRanges() { return ranges; }
+    public void setRanges(List<Range> ranges) { this.ranges = ranges; }
+
+    public String getLinkedInstrumentId() { return linkedInstrumentId; }
+    public void setLinkedInstrumentId(String linkedInstrumentId) { this.linkedInstrumentId = linkedInstrumentId; }
 }

@@ -1,20 +1,36 @@
 import React from 'react';
 import DialGauge from './DialGauge';
-import WarningBoard from './WarningBoard'; // ДОДАЛИ ІМПОРТ
-
-const componentMap = {
-    'DIAL_GAUGE': DialGauge,
-    'WARNING_BOARD': WarningBoard,
-};
+import WarningBoard from './WarningBoard';
 
 const InstrumentRenderer = ({ inst }) => {
-    const SpecificInstrument = componentMap[inst.type];
-
-    if (!SpecificInstrument) {
-        return <div className="instrument-card">Невідомий тип приладу: {inst.type}</div>;
+    if (inst.type === 'DIAL_GAUGE') {
+        return (
+            <DialGauge
+                name={inst.name}
+                min={inst.min}
+                max={inst.max}
+                value={inst.currentValue || 0}
+                unit={inst.unit}
+                size={inst.size}
+            />
+        );
     }
 
-    return <SpecificInstrument {...inst} value={inst.currentValue || inst.min} />;
+    if (inst.type === 'WARNING_BOARD') {
+        return (
+            <WarningBoard
+                name={inst.name}
+                value={inst.currentValue || 0}
+                ranges={inst.ranges || []}
+                message={inst.message}
+                level={inst.level}
+                width={inst.width}
+                height={inst.height}
+            />
+        );
+    }
+
+    return null;
 };
 
 export default InstrumentRenderer;

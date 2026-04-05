@@ -6,25 +6,27 @@
 }
 
 .instrument-external-title {
-    color: white;
+    color: var(--text-main);
     font-size: 14px;
-    font-weight: bold;
+    font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 2px;
-    text-shadow: 0 2px 5px rgba(0,0,0,0.8);
+    text-shadow: 0 2px 5px var(--shadow-color);
 }
 
 .gauge-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: #0d1117;
+    background-color: rgba(15, 10, 25, 0.7);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
     border-radius: 50%;
     cursor: grab;
-    border: 6px solid #b1b3b5;
+    border: 6px solid var(--panel-border);
     box-shadow:
-            0 8px 25px rgba(0,0,0,0.6),
-            inset 0 0 30px rgba(0,0,0,1);
+            0 8px 25px var(--shadow-color),
+            inset 0 0 30px rgba(0,0,0,0.8);
     user-select: none;
     overflow: hidden;
     box-sizing: border-box;
@@ -40,26 +42,37 @@
     margin-top: -10px;
 }
 
-.gauge-display-block {
+.gauge-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    position: absolute;
-    bottom: 25px;
-    z-index: 10;
+    background-color: var(--panel-bg);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-radius: 50%;
+    cursor: grab;
+    border: 6px solid var(--panel-border);
+    box-shadow:
+            0 8px 25px var(--shadow-color),
+            inset 0 0 15px rgba(0,0,0,0.1);
+    user-select: none;
+    overflow: hidden;
+    box-sizing: border-box;
+    position: relative;
 }
 
 .gauge-value-display {
     font-size: 32px;
     font-weight: bold;
-    color: #fff;
+    color: var(--text-main);
     line-height: 1;
     font-family: 'Courier New', Courier, monospace;
 }
 
 .gauge-unit {
     font-size: 14px;
-    color: #a1a1a1;
+    color: var(--text-main);
+    opacity: 0.6;
     font-weight: normal;
     text-transform: uppercase;
     letter-spacing: 1px;
