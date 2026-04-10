@@ -1,0 +1,126 @@
+.digital-display-card {
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    padding: 15px 20px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px 0 var(--shadow-color);
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.dd-header {
+    display: flex !important;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.dd-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-main);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.dd-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    flex-grow: 1;
+    padding-top: 10px;
+}
+
+.dd-value-group {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+
+.digital-display-card {
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: 12px;
+    padding: 15px 20px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 8px 32px 0 var(--shadow-color);
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.dd-header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.dd-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-main);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.dd-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    flex-grow: 1;
+    padding-top: 10px;
+}
+
+.dd-value-group {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.dd-value {
+    font-size: 3.5rem;
+    color: var(--text-main);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 1px;
+}
+
+.dd-unit {
+    font-size: 1.5rem;
+    color: var(--text-main);
+    opacity: 0.5;
+    font-weight: normal;
+}
+
+.font-digital-7 { font-family: 'Courier New', Courier, monospace; letter-spacing: 2px; }
+.font-modern { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+.font-mono { font-family: 'Lucida Console', Monaco, monospace; }
+.dd-value {
+    font-size: 3.5rem;
+    color: var(--text-main);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 10px rgba(168, 85, 247, 0.25);
+}
+
+.dd-unit {
+    font-size: 1.5rem;
+    color: var(--text-main);
+    opacity: 0.5;
+    font-weight: normal;
+}
+
+.font-digital-7 { font-family: 'Courier New', Courier, monospace; letter-spacing: 2px; }
+.font-modern { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+.font-mono { font-family: 'Lucida Console', Monaco, monospace; }

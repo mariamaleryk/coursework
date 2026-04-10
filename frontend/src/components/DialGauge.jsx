@@ -83,6 +83,17 @@ const DialGauge = ({ name = 'Прилад', min = 0, max = 100, value = 0, unit 
                             {ticks}
                             {tickLabels}
 
+                            <text
+                                x="100"
+                                y="180"
+                                className="gauge-dial-unit"
+                                textAnchor="middle"
+                                fill="var(--text-main)"
+                                fillOpacity="0.5"
+                            >
+                                {unit}
+                            </text>
+
                             <g transform={`translate(${cx}, ${cy}) rotate(${rotation || 0})`} style={{ transition: 'transform 0.5s ease-in-out' }}>
                                 <polygon points="-3.5,0 3.5,0 0,-92" fill="#e74c3c" stroke="#e74c3c" strokeWidth="1" strokeLinejoin="round" />
                             </g>

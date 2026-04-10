@@ -10,7 +10,10 @@ import java.util.UUID;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(value = DialGauge.class, name = "DIAL_GAUGE"),
-        @JsonSubTypes.Type(value = WarningBoard.class, name = "WARNING_BOARD")
+        @JsonSubTypes.Type(value = WarningBoard.class, name = "WARNING_BOARD"),
+        @JsonSubTypes.Type(value = SliderControl.class, name = "SLIDER_CONTROL"),
+        @JsonSubTypes.Type(value = ColumnGauge.class, name = "COLUMN_GAUGE"),
+        @JsonSubTypes.Type(value = DigitalDisplay.class, name = "DIGITAL_DISPLAY")
 })
 public abstract class Instrument {
     private String id;
