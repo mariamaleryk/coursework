@@ -5,8 +5,35 @@ import CreateModal from './components/CreateModal';
 import simulationData from './simulationData.json';
 import './App.css';
 
-const DraggableInstrument = ({ inst, updatePosition, onContextMenu, onTouchStart, onTouchEnd, onTouchMove }) => {
+const DraggableInstrument = ({ inst, updatePosition, onOpenMenu }) => {
     const nodeRef = useRef(null);
+    const lastTap = useRef(0); // Зберігає час останнього тапу на екрані
+
+    // Обробка подвійного тапу (для телефонів)
+    const handleTouchEnd = (e) => {
+        const now = Date.now();
+        // Якщо між тапами пройшло менше 300 мілісекунд - це подвійний тап!
+        if (now - lastTap.current < 300) {
+            e.preventDefault();
+            const touch = e.changedTouches[0];
+            onOpenMenu(inst.id, touch.clientX, touch.clientY);
+        }
+        lastTap.current = now;
+    };
+
+    // Обробка подвійного кліку (для комп'ютера)
+    const handleDoubleClick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        onOpenMenu(inst.id, e.clientX, e.clientY);
+    };
+
+    // Обробка правого кліку мишею (для комп'ютера)
+    const handleContextMenu = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        onOpenMenu(inst.id, e.clientX, e.clientY);
+    };
 
     return (
         <Draggable
@@ -18,10 +45,9 @@ const DraggableInstrument = ({ inst, updatePosition, onContextMenu, onTouchStart
             <div
                 ref={nodeRef}
                 style={{ position: 'absolute', WebkitTouchCallout: 'none', userSelect: 'none' }}
-                onContextMenu={(e) => onContextMenu(e, inst.id)}
-                onTouchStart={(e) => onTouchStart(e, inst.id)}
-                onTouchEnd={onTouchEnd}
-                onTouchMove={onTouchMove}
+                onContextMenu={handleContextMenu}
+                onDoubleClick={handleDoubleClick}
+                onTouchEnd={handleTouchEnd}
             >
                 <InstrumentRenderer inst={inst} />
             </div>
@@ -30,7 +56,6 @@ const DraggableInstrument = ({ inst, updatePosition, onContextMenu, onTouchStart
 };
 
 function App() {
-    const pressTimer = useRef(null);
     const stepIndexRef = useRef(0);
 
     const [instruments, setInstruments] = useState([]);
@@ -63,9 +88,8 @@ function App() {
         return () => clearInterval(interval);
     }, [simulatingIds]);
 
-    // ЗАВАНТАЖЕННЯ ДАНИХ З ПАМ'ЯТІ БРАУЗЕРА (БЕЗ LOCALHOST)
+    // ЗАВАНТАЖЕННЯ ДАНИХ З ПАМ'ЯТІ БРАУЗЕРА
     useEffect(() => {
-        // eslint-disable-next-line react-hooks/immutability
         window.addEventListener('click', closeContextMenu);
         const savedInstruments = localStorage.getItem('dashboard_instruments');
         if (savedInstruments) {
@@ -129,9 +153,9 @@ function App() {
         closeContextMenu();
     };
 
-    const handleContextMenu = (event, instrumentId) => {
-        event.preventDefault();
-        setContextMenu({ visible: true, x: event.clientX, y: event.clientY, instrumentId });
+    // ЄДИНА ФУНКЦІЯ ДЛЯ ВІДКРИТТЯ МЕНЮ (з компа та телефону)
+    const handleOpenMenu = (instrumentId, x, y) => {
+        setContextMenu({ visible: true, x, y, instrumentId });
     };
 
     const closeContextMenu = () => {
@@ -162,19 +186,6 @@ function App() {
         });
         closeContextMenu();
     };
-
-    const handleTouchStart = (e, instrumentId) => {
-        pressTimer.current = setTimeout(() => {
-            if (e.touches && e.touches.length > 0) {
-                const touch = e.touches[0];
-                const syntheticEvent = { clientX: touch.clientX, clientY: touch.clientY, preventDefault: () => {} };
-                handleContextMenu(syntheticEvent, instrumentId);
-            }
-        }, 500);
-    };
-
-    const handleTouchEnd = () => { if (pressTimer.current) clearTimeout(pressTimer.current); };
-    const handleTouchMove = () => { if (pressTimer.current) clearTimeout(pressTimer.current); };
 
     const toggleTheme = () => { setTheme(prev => prev === 'dark' ? 'light' : 'dark'); };
 
@@ -212,10 +223,7 @@ function App() {
                                 key={displayInst.id}
                                 inst={displayInst}
                                 updatePosition={updatePosition}
-                                onContextMenu={handleContextMenu}
-                                onTouchStart={handleTouchStart}
-                                onTouchEnd={handleTouchEnd}
-                                onTouchMove={handleTouchMove}
+                                onOpenMenu={handleOpenMenu}
                             />
                         );
                     })
