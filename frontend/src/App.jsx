@@ -7,28 +7,31 @@ import './App.css';
 
 const DraggableInstrument = ({ inst, updatePosition, onOpenMenu }) => {
     const nodeRef = useRef(null);
-    const lastTap = useRef(0); // Зберігає час останнього тапу на екрані
+    const pressTimer = useRef(null);
+    const isDragging = useRef(false); // Слідкуємо, чи прилад дійсно тягнуть
 
-    // Обробка подвійного тапу (для телефонів)
-    const handleTouchEnd = (e) => {
-        const now = Date.now();
-        // Якщо між тапами пройшло менше 300 мілісекунд - це подвійний тап!
-        if (now - lastTap.current < 300) {
-            e.preventDefault();
-            const touch = e.changedTouches[0];
-            onOpenMenu(inst.id, touch.clientX, touch.clientY);
-        }
-        lastTap.current = now;
+    // Початок дотику (для телефонів)
+    const handleTouchStart = (e) => {
+        isDragging.current = false;
+        const touch = e.touches[0];
+        const clientX = touch.clientX;
+        const clientY = touch.clientY;
+
+        // Запускаємо таймер на пів секунди (затримка)
+        pressTimer.current = setTimeout(() => {
+            // Якщо за цей час ми не почали тягнути прилад - відкриваємо меню!
+            if (!isDragging.current) {
+                onOpenMenu(inst.id, clientX, clientY);
+            }
+        }, 500); // 500 мілісекунд = 0.5 сек
     };
 
-    // Обробка подвійного кліку (для комп'ютера)
-    const handleDoubleClick = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        onOpenMenu(inst.id, e.clientX, e.clientY);
+    // Якщо відпустили палець раніше - скасовуємо таймер
+    const handleTouchEnd = () => {
+        if (pressTimer.current) clearTimeout(pressTimer.current);
     };
 
-    // Обробка правого кліку мишею (для комп'ютера)
+    // Правий клік (для комп'ютерів)
     const handleContextMenu = (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -40,14 +43,20 @@ const DraggableInstrument = ({ inst, updatePosition, onOpenMenu }) => {
             nodeRef={nodeRef}
             defaultPosition={{ x: inst.x || 0, y: inst.y || 0 }}
             bounds="parent"
+            onDrag={() => {
+                // Магія тут: якщо прилад реально потягнули, ми блокуємо відкриття меню
+                isDragging.current = true;
+                if (pressTimer.current) clearTimeout(pressTimer.current);
+            }}
             onStop={(e, data) => updatePosition(inst.id, data.x, data.y)}
         >
             <div
                 ref={nodeRef}
-                style={{ position: 'absolute', WebkitTouchCallout: 'none', userSelect: 'none' }}
+                style={{ position: 'absolute', WebkitTouchCallout: 'none', userSelect: 'none', touchAction: 'none' }}
                 onContextMenu={handleContextMenu}
-                onDoubleClick={handleDoubleClick}
+                onTouchStart={handleTouchStart}
                 onTouchEnd={handleTouchEnd}
+                onTouchCancel={handleTouchEnd}
             >
                 <InstrumentRenderer inst={inst} />
             </div>
