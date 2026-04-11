@@ -9,86 +9,92 @@ const ColumnGauge = ({
                          unit = '',
                          height = 180
                      }) => {
-    const numMin = Number(min) || 0;
-    const numMax = Number(max) || 100;
-    const numValue = Number(value) || 0;
+    const numMin = Number(min);
+    const numMax = Number(max);
+    const numValue = Number(value);
+
     const numericHeight = Number(height) || 180;
+    const heightInRem = numericHeight / 16;
 
     const safeValue = Math.min(Math.max(numValue, numMin), numMax);
     const range = numMax - numMin;
-    const percentage = range === 0 ? 0 : ((safeValue - numMin) / range) * 100;
+    const percentage = range <= 0 ? 0 : ((safeValue - numMin) / range) * 100;
 
     const leftTicks = [];
     const rightTicks = [];
 
-    const targetTickCount = Math.max(2, Math.floor(numericHeight / 40));
+    if (range > 0) {
+        const uniqueMajorsSet = new Set();
+        uniqueMajorsSet.add(numMin);
+        uniqueMajorsSet.add(numMax);
 
-    let rawStep = range / targetTickCount;
-    const magnitude = Math.pow(10, Math.floor(Math.log10(rawStep || 1)));
-    const normalizedStep = rawStep / magnitude;
+        const tickSpacing = numericHeight < 250 ? 60 : 45;
+        const targetTickCount = Math.max(2, Math.floor(numericHeight / tickSpacing));
 
-    const allowedSteps = [1, 2, 2.5, 4, 5, 10];
-    let step = allowedSteps.find(s => s >= normalizedStep) * magnitude;
-    if (!step) step = 10 * magnitude;
+        if (numMin < 0 && numMax > 0) {
+            uniqueMajorsSet.add(0);
+            const countPos = Math.max(1, Math.round((numMax / range) * targetTickCount));
+            const countNeg = Math.max(1, Math.round((Math.abs(numMin) / range) * targetTickCount));
 
-    const uniqueMajors = [];
-    let startVal = Math.ceil(numMin / step) * step;
-    let endVal = Math.floor(numMax / step) * step;
+            for (let i = 1; i < countPos; i++) uniqueMajorsSet.add(Number(( (numMax / countPos) * i).toFixed(1)));
+            for (let i = 1; i < countNeg; i++) uniqueMajorsSet.add(Number(( (numMin / countNeg) * i).toFixed(1)));
+        } else {
+            const step = range / targetTickCount;
+            for (let i = 1; i < targetTickCount; i++) uniqueMajorsSet.add(Number((numMin + i * step).toFixed(1)));
+        }
 
-    for (let val = startVal; val <= endVal + 1e-9; val += step) {
-        uniqueMajors.push(Math.round(val * 100) / 100);
-    }
+        const uniqueMajors = Array.from(uniqueMajorsSet).sort((a, b) => a - b);
 
-    const pxPerStep = (step / range) * numericHeight;
-    let minorTicksPerSection = 0;
-    if (pxPerStep >= 50) minorTicksPerSection = 4;
-    else if (pxPerStep >= 20) minorTicksPerSection = 1;
+        uniqueMajors.forEach((val, index) => {
+            const tickPos = ((val - numMin) / range) * 100;
+            const displayVal = Math.abs(val) < 0.001 ? 0 : val;
 
-    uniqueMajors.forEach((val, index) => {
-        const tickPos = ((val - numMin) / range) * 100;
-        const displayVal = Math.abs(val) < 0.001 ? 0 : val;
+            const majorTick = (side) => (
+                <div key={`${side}-maj-${val}`} className={`cg-tick-wrapper major ${side}`} style={{ bottom: `${tickPos}%` }}>
+                    <div className="cg-tick-label">{displayVal}</div>
+                    <div className="cg-tick-mark"></div>
+                </div>
+            );
 
-        leftTicks.push(
-            <div key={`l-maj-${val}`} className="cg-tick-wrapper major left" style={{ bottom: `${tickPos}%` }}>
-                <div className="cg-tick-label">{displayVal}</div>
-                <div className="cg-tick-mark"></div>
-            </div>
-        );
-        rightTicks.push(
-            <div key={`r-maj-${val}`} className="cg-tick-wrapper major right" style={{ bottom: `${tickPos}%` }}>
-                <div className="cg-tick-label">{displayVal}</div>
-                <div className="cg-tick-mark"></div>
-            </div>
-        );
+            leftTicks.push(majorTick('left'));
+            rightTicks.push(majorTick('right'));
 
-        if (index > 0 && minorTicksPerSection > 0) {
-            const prevVal = uniqueMajors[index - 1];
-            const valDiff = val - prevVal;
-
-            for (let j = 1; j <= minorTicksPerSection; j++) {
-                const minorVal = prevVal + (valDiff * j) / (minorTicksPerSection + 1);
+            if (index > 0) {
+                const prevVal = uniqueMajors[index - 1];
+                const minorVal = prevVal + (val - prevVal) / 2;
                 const minorPos = ((minorVal - numMin) / range) * 100;
 
-                leftTicks.push(<div key={`l-min-${minorVal}`} className="cg-tick-wrapper minor left" style={{ bottom: `${minorPos}%` }}><div className="cg-tick-mark"></div></div>);
-                rightTicks.push(<div key={`r-min-${minorVal}`} className="cg-tick-wrapper minor right" style={{ bottom: `${minorPos}%` }}><div className="cg-tick-mark"></div></div>);
+                const minorTick = (side) => (
+                    <div key={`${side}-min-${minorVal}`} className={`cg-tick-wrapper minor ${side}`} style={{ bottom: `${minorPos}%` }}>
+                        <div className="cg-tick-mark" style={{ opacity: 0.3, width: '0.45rem', height: '0.1rem' }}></div>
+                    </div>
+                );
+
+                leftTicks.push(minorTick('left'));
+                rightTicks.push(minorTick('right'));
             }
-        }
-    });
+        });
+    }
 
     return (
-        <div className="column-gauge-card">
-            <div className="cg-header">
-                <div className="cg-name">{name}</div>
-                <div className="cg-display-value">{safeValue}<span className="cg-unit">{unit}</span></div>
+        <div className="instrument-card" style={{ minWidth: '15rem' }}>
+            <div className="instrument-header" style={{ alignItems: 'center', marginBottom: '0.5rem', gap: '1rem' }}>
+                <div className="instrument-title">{name}</div>
+                <div className="instrument-value-group">
+                    <span className="instrument-value accent" style={{ textShadow: '0 0 10px rgba(168, 85, 247, 0.3)' }}>
+                        {safeValue}
+                    </span>
+                    <span className="instrument-unit">{unit}</span>
+                </div>
             </div>
 
             <div className="cg-body">
-                <div className="cg-scale-column left" style={{ height: `${numericHeight}px` }}>
+                <div className="cg-scale-column left" style={{ height: `${heightInRem}rem` }}>
                     {leftTicks}
                 </div>
 
                 <div className="cg-flask-container">
-                    <div className="cg-flask-stem" style={{ height: `${numericHeight}px` }}>
+                    <div className="cg-flask-stem" style={{ height: `${heightInRem}rem` }}>
                         <div className="cg-flask-fill" style={{ height: `${Math.max(0, Math.min(100, percentage))}%` }}>
                             <div className="cg-flask-glow"></div>
                         </div>
@@ -96,7 +102,7 @@ const ColumnGauge = ({
                     <div className="cg-flask-bulb"></div>
                 </div>
 
-                <div className="cg-scale-column right" style={{ height: `${numericHeight}px` }}>
+                <div className="cg-scale-column right" style={{ height: `${heightInRem}rem` }}>
                     {rightTicks}
                 </div>
             </div>

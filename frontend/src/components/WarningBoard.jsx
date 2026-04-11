@@ -12,6 +12,8 @@ const WarningBoard = ({
                       }) => {
     const numWidth = parseInt(width, 10) || 300;
     const numHeight = parseInt(height, 10) || 100;
+    const widthRem = numWidth / 16;
+    const heightRem = numHeight / 16;
 
     const activeRange = ranges && ranges.length > 0
         ? ranges.find(r => value >= r.min && value <= r.max)
@@ -23,7 +25,7 @@ const WarningBoard = ({
     const levelStyles = {
         INFO: { bg: 'var(--panel-bg)', color: 'var(--text-main)', icon: '', border: 'var(--panel-border)' },
         WARNING: { bg: 'rgba(180, 80, 0, 0.8)', color: '#fbbf24', icon: '⚠️', border: '#d97706' },
-        ALARM: { bg: 'rgba(220, 38, 38, 0.8)', color: '#f87171', icon: '🚨', border: '#ef4444' }
+        ALARM: { bg: 'rgba(220, 38, 38, 0.8)', color: '#f87171', icon: '🚨', border: 'var(--danger-main)' }
     };
 
     const currentStyle = levelStyles[currentLevel] || levelStyles.INFO;
@@ -31,8 +33,8 @@ const WarningBoard = ({
 
     return (
         <div className="warning-board-container" style={{
-            width: `${numWidth}px`,
-            height: `${numHeight}px`,
+            width: `${widthRem}rem`,
+            height: `${heightRem}rem`,
             backgroundColor: currentStyle.bg,
             borderColor: currentStyle.border
         }}>

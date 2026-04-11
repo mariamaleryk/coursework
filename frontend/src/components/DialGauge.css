@@ -2,34 +2,25 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 12px;
-}
+    gap: 0.8rem;
 
-.instrument-external-title {
-    color: var(--text-main);
-    font-size: 14px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    text-shadow: 0 2px 5px var(--shadow-color);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 12.5rem;
+    height: 14.3rem;
 }
 
 .gauge-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: rgba(15, 10, 25, 0.7);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
+    background-color: var(--panel-bg);
+    backdrop-filter: blur(1rem);
     border-radius: 50%;
     cursor: grab;
-    border: 6px solid var(--panel-border);
-    box-shadow:
-            0 8px 25px var(--shadow-color),
-            inset 0 0 30px rgba(0,0,0,0.8);
-    user-select: none;
-    overflow: hidden;
-    box-sizing: border-box;
+    border: 0.4rem solid var(--panel-border);
+    box-shadow: 0 0.5rem 1.5rem var(--shadow-color), inset 0 0 1rem rgba(0,0,0,0.1);
     position: relative;
 }
 
@@ -39,49 +30,19 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: -10px;
-}
-
-.gauge-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: var(--panel-bg);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border-radius: 50%;
-    cursor: grab;
-    border: 6px solid var(--panel-border);
-    box-shadow:
-            0 8px 25px var(--shadow-color),
-            inset 0 0 15px rgba(0,0,0,0.1);
-    user-select: none;
-    overflow: hidden;
-    box-sizing: border-box;
-    position: relative;
-}
-
-.gauge-value-display {
-    font-size: 32px;
-    font-weight: bold;
-    color: var(--text-main);
-    line-height: 1;
-    font-family: 'Courier New', Courier, monospace;
-}
-
-.gauge-unit {
-    font-size: 14px;
-    color: var(--text-main);
-    opacity: 0.6;
-    font-weight: normal;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    /*margin-top: -0rem;*/
 }
 
 .gauge-dial-unit {
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: bold;
     text-transform: uppercase;
-    letter-spacing: 1px;
     pointer-events: none;
+}
+
+
+@media (max-width: 1024px) {
+    .instrument-wrapper {
+        top: 3rem;
+    }
 }

@@ -2,8 +2,8 @@
     position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
     background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(0.4rem);
+    -webkit-backdrop-filter: blur(0.4rem);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -12,44 +12,34 @@
 
 .modal-content.large-modal {
     width: 80vw;
-    max-width: 1200px;
+    max-width: 75rem;
     height: 85vh;
-    max-height: 85vh;
     background-color: var(--bg-color);
     color: var(--text-main);
-    border: 1px solid var(--panel-border);
-    box-shadow: 0 1vh 4vh var(--shadow-color);
-    border-radius: 1vw;
+    border: var(--border-thin) solid var(--panel-border);
+    box-shadow: 0 1rem 3rem var(--shadow-color);
+    border-radius: var(--radius-lg);
     position: relative;
-    padding: 30px;
+    padding: 2rem;
     display: flex;
     flex-direction: column;
 }
 
 .close-button {
     position: absolute;
-    top: 15px;
-    right: 20px;
-    background: none;
-    border: none;
-    font-size: 28px;
-    color: var(--text-main);
-    opacity: 0.5;
-    cursor: pointer;
-    line-height: 1;
-    padding: 0;
-    transition: all 0.2s ease;
-    z-index: 10;
+    top: 1rem; right: 1.5rem;
+    background: none; border: none;
+    font-size: 2rem; color: var(--text-main);
+    opacity: 0.5; cursor: pointer; line-height: 1;
+    transition: all 0.2s ease; z-index: 10;
 }
-.close-button:hover {
-    opacity: 1;
-    color: #ef4444;
-}
+.close-button:hover { opacity: 1; color: var(--danger-main); }
 
 .modal-body-split {
     display: flex;
-    gap: 4vw;
-    margin-top: 10px;
+    flex-direction: row;
+    gap: 3rem;
+    margin-top: 1rem;
     flex-grow: 1;
     overflow: hidden;
 }
@@ -58,154 +48,419 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    padding-right: 20px;
-    border-right: 1px solid var(--panel-border);
+    gap: 0.8rem;
+    padding-right: 1.5rem;
+    border-right: var(--border-thin) solid var(--panel-border);
     overflow-y: auto;
-}
-
-.modal-left-settings::-webkit-scrollbar { width: 6px; }
-.modal-left-settings::-webkit-scrollbar-track { background: transparent; }
-.modal-left-settings::-webkit-scrollbar-thumb { background: var(--panel-border); border-radius: 3px; }
-
-.form-group select, .form-group input {
-    padding: 10px;
-    background-color: var(--panel-bg);
-    color: var(--text-main);
-    border: 1px solid var(--panel-border);
-    border-radius: 0.4vw;
-    font-family: inherit;
-    outline: none;
-    transition: border-color 0.3s;
-}
-.form-group select:focus, .form-group input:focus {
-    border-color: #38bdf8;
-}
-
-.settings-section-title {
-    font-size: 0.9rem;
-    font-weight: bold;
-    color: var(--text-main);
-    opacity: 0.7;
-    margin-top: 10px;
-    border-bottom: 1px solid var(--panel-border);
-    padding-bottom: 5px;
 }
 
 .modal-right-preview {
     flex: 1;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-start;
+    align-items: center;
+    justify-content: center;
     background-color: var(--panel-bg);
-    border: 2px dashed var(--panel-border);
-    border-radius: 8px;
+    border: 0.15rem dashed var(--panel-border);
+    border-radius: var(--radius-md);
     position: relative;
+    padding: 2rem;
     overflow: auto;
-    padding: 40px 2vw 2vw 2vw;
 }
 
-.modal-right-preview::-webkit-scrollbar { width: 8px; height: 8px; }
-.modal-right-preview::-webkit-scrollbar-track { background: transparent; }
-.modal-right-preview::-webkit-scrollbar-thumb { background: var(--panel-border); border-radius: 4px; }
+.form-group select, .form-group input {
+    padding: 0.6rem;
+    background-color: var(--panel-bg);
+    color: var(--text-main);
+    border: var(--border-thin) solid var(--panel-border);
+    border-radius: var(--radius-sm);
+    font-family: inherit; outline: none; width: 100%;
+}
+.form-group select:focus, .form-group input:focus { border-color: var(--accent-main); }
+
+.settings-section-title {
+    font-size: 0.9rem; font-weight: bold; color: var(--text-muted);
+    margin-top: 1rem; border-bottom: var(--border-thin) solid var(--panel-border); padding-bottom: 0.3rem;
+}
 
 .preview-label {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    font-size: 0.85rem;
+    position: absolute; top: 1rem; left: 1rem;
+    font-size: 0.8rem; color: var(--text-muted); font-weight: bold; text-transform: uppercase;
+}
+
+
+.range-setup-card {
+    background-color: var(--panel-bg); /* Такий самий напівпрозорий фон, як у всього вікна */
+    border: var(--border-thin) solid var(--panel-border);
+    border-radius: var(--radius-md);
+    padding: 1.5rem 1rem 1rem 1rem;
+    margin-bottom: 1.5rem;
+    margin-top: 0.5rem;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.range-setup-row {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.range-setup-row > div {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    min-width: 0;
+}
+
+/* === РОБИМО ІНПУТИ ТАКИМИ Ж, ЯК І ВСІ ІНШІ === */
+.range-setup-row select,
+.range-setup-row input {
+    padding: 0.6rem;
+    background-color: var(--bg-color); /* Темний фон */
     color: var(--text-main);
-    opacity: 0.5;
+    border: var(--border-thin) solid var(--panel-border);
+    border-radius: var(--radius-sm);
+    font-family: inherit;
+    outline: none;
+    width: 100%;
+}
+.range-setup-row select option,
+.form-group select option {
+    font-size: 1rem !important; /* Примусово повертаємо нормальний розмір тексту */
+    background-color: var(--bg-color); /* Зберігаємо темний фон */
+    color: var(--text-main); /* Зберігаємо світлий текст */
+    padding: 0.5rem; /* Додаємо трохи простору між рядками */
+}
+
+.range-setup-row select:focus,
+.range-setup-row input:focus {
+    border-color: var(--accent-main); /* Фіолетова рамка при кліку */
+}
+
+.range-setup-row label {
+    font-size: 0.8rem;
     font-weight: bold;
+    color: var(--text-muted);
     text-transform: uppercase;
 }
 
-.slider-container {
+/* Червоний хрестик видалення */
+.btn-remove-range {
+    position: absolute;
+    top: -0.8rem;
+    right: -0.8rem;
+    background: var(--danger-main);
+    color: white;
+    border: 0.15rem solid var(--bg-color);
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 15px;
-    width: 100%;
-    margin-top: 5px;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    box-shadow: 0 0.2rem 0.5rem rgba(0,0,0,0.4);
+    z-index: 10;
+    transition: transform 0.2s ease, background 0.2s ease;
 }
 
-.slider-value-display {
-    font-size: 1rem;
-    font-weight: bold;
-    color: var(--text-main);
-    min-width: 50px;
-    text-align: right;
-    font-family: 'Courier New', Courier, monospace;
+.btn-remove-range:hover {
+    transform: scale(1.15) rotate(90deg);
+    background: #ff0000;
 }
+
+
+.form-group select option {
+    background-color: var(--bg-color); /* Задаємо суцільний темний фон (без прозорості) */
+    color: var(--text-main);           /* Світлий текст */
+    padding: 10px;                     /* Додаємо відступи (працює не в усіх браузерах, але допомагає) */
+    font-size: 1rem;
+}
+
+.form-group select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    /* Додаємо свою кастомну стрілочку, бо стандартну ми щойно прибрали */
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a855f7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1em;
+    padding-right: 2.5rem; /* Місце для нашої нової стрілочки */
+}
+
+/* =========================================================
+   СТИЛІ ДЛЯ ПОВЗУНКА (Кросбраузерні)
+   ========================================================= */
 
 input[type=range].styled-slider {
     -webkit-appearance: none;
+    appearance: none;
     width: 100%;
     background: transparent;
     cursor: pointer;
+    accent-color: var(--accent-main);
+
+    /* ДОДАНІ РЯДКИ: вбиваємо рамки і відступи від звичайних інпутів */
+    padding: 0 !important;
+    border: none !important;
+    margin: 0.5rem 0; /* Трохи місця зверху і знизу */
 }
 
 input[type=range].styled-slider:focus {
     outline: none;
 }
 
+/* --- Для Chrome, Safari, Edge --- */
 input[type=range].styled-slider::-webkit-slider-runnable-track {
     width: 100%;
-    height: 8px;
+    height: 0.5rem;
     background: rgba(139, 92, 246, 0.2);
-    border-radius: 4px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    transition: background 0.2s;
-}
-
-input[type=range].styled-slider:hover::-webkit-slider-runnable-track {
-    background: rgba(139, 92, 246, 0.3);
-}
-
-input[type=range].styled-slider::-moz-range-track {
-    width: 100%;
-    height: 8px;
-    background: rgba(139, 92, 246, 0.2);
-    border-radius: 4px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: var(--radius-sm);
 }
 
 input[type=range].styled-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
-    height: 20px;
-    width: 20px;
+    height: 1.2rem;
+    width: 1.2rem;
     border-radius: 50%;
-    background: #a855f7;
-    border: 2px solid white;
-    margin-top: -7px;
-
-    box-shadow:
-            0 0 10px rgba(168, 85, 247, 0.6),
-            0 0 5px rgba(255, 255, 255, 0.5);
-
-    transition: transform 0.2s, background 0.2s, box-shadow 0.2s;
+    background: var(--accent-main);
+    border: 0.15rem solid var(--text-main); /* Зробила обідок кольору тексту, щоб було контрастніше */
+    margin-top: -0.35rem;
+    transition: transform 0.2s;
 }
 
 input[type=range].styled-slider:hover::-webkit-slider-thumb {
-    background: #c084fc;
     transform: scale(1.15);
-    box-shadow:
-            0 0 15px rgba(168, 85, 247, 0.8),
-            0 0 10px rgba(255, 255, 255, 0.6);
+}
+
+/* --- Для Firefox --- */
+input[type=range].styled-slider::-moz-range-track {
+    width: 100%;
+    height: 0.5rem;
+    background: rgba(139, 92, 246, 0.2);
+    border-radius: var(--radius-sm);
 }
 
 input[type=range].styled-slider::-moz-range-thumb {
-    height: 20px;
-    width: 20px;
+    height: 1.2rem;
+    width: 1.2rem;
     border-radius: 50%;
-    background: #a855f7;
-    border: 2px solid white;
-    box-shadow: 0 0 10px rgba(168, 85, 247, 0.6);
-    transition: transform 0.2s, background 0.2s;
-    cursor: pointer;
+    background: var(--accent-main);
+    border: 0.15rem solid var(--text-main);
+    transition: transform 0.2s;
 }
 
 input[type=range].styled-slider:hover::-moz-range-thumb {
-    background: #c084fc;
     transform: scale(1.15);
 }
+
+
+.custom-select-container {
+    position: relative;
+    width: 100%;
+    user-select: none;
+}
+
+/*.custom-select-header {*/
+/*    padding: 0.9rem 0.8rem;*/
+/*    background-color: var(--panel-bg);*/
+/*    border: var(--border-thin) solid var(--panel-border);*/
+/*    border-radius: var(--radius-sm);*/
+/*    color: var(--text-main);*/
+/*    cursor: pointer;*/
+/*    display: flex;*/
+/*    justify-content: space-between;*/
+/*    align-items: center;*/
+/*    font-size: 1.1rem;*/
+/*    transition: border-color 0.3s;*/
+/*}*/
+
+.custom-select-header:hover {
+    border-color: var(--accent-main);
+}
+
+.custom-select-arrow {
+    font-size: 0.8rem;
+    color: var(--accent-main);
+    transition: transform 0.3s ease;
+}
+
+.custom-select-arrow.open {
+    transform: rotate(180deg);
+}
+
+.custom-select-header {
+    padding: 0.6rem 0.8rem; /* Зменшили відступи до стандартних */
+    background-color: var(--bg-color); /* Зробили фон як у всіх інпутів */
+    border: var(--border-thin) solid var(--panel-border);
+    border-radius: var(--radius-sm);
+    color: var(--text-main);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1rem; /* Стандартний десктопний шрифт */
+    transition: border-color 0.3s;
+}
+
+.custom-select-item {
+    padding: 0.6rem 0.8rem; /* Зменшили висоту кожного пункту */
+    cursor: pointer;
+    color: var(--text-main);
+    border-bottom: 1px solid rgba(139, 92, 246, 0.1);
+    font-size: 0.95rem; /* Акуратний розмір тексту */
+    transition: background 0.2s;
+}
+
+.custom-select-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    margin-top: 0.4rem;
+    background-color: var(--bg-color); /* Темний фон твоєї теми */
+    border: var(--border-thin) solid var(--panel-border);
+    border-radius: var(--radius-sm);
+    list-style: none;
+    padding: 0;
+    max-height: 15rem;
+    overflow-y: auto;
+    z-index: 9999; /* Щоб перекривало інші поля */
+    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.8);
+}
+
+/*.custom-select-item {*/
+/*    padding: 0.8rem 1rem;*/
+/*    cursor: pointer;*/
+/*    color: var(--text-main);*/
+/*    border-bottom: 1px solid rgba(139, 92, 246, 0.1);*/
+/*    font-size: 1.05rem;*/
+/*    transition: background 0.2s;*/
+/*}*/
+
+.custom-select-item:last-child {
+    border-bottom: none;
+}
+
+.custom-select-item:hover, .custom-select-item.selected {
+    background-color: var(--btn-hover);
+    color: white;
+}
+
+@media (max-width: 1024px) {
+    .modal-content.large-modal {
+        width: 95vw;
+        height: 95vh;
+        padding: 1rem;
+    }
+
+    .modal-body-split {
+        flex-direction: column;
+        gap: 1rem;
+        overflow-y: auto;
+    }
+
+    .modal-left-settings {
+        flex: none;
+        width: 100%;
+        padding-right: 0;
+        border-right: none;
+        border-bottom: var(--border-thin) solid var(--panel-border);
+        padding-bottom: 1rem;
+        overflow-y: visible;
+    }
+
+    .modal-right-preview {
+        flex: none;
+        width: 100%;
+        min-height: 25rem;
+        padding: 1rem;
+        justify-content: center;
+    }
+
+    .close-button { top: 0.5rem; right: 1rem; font-size: 3rem; }
+
+    .range-setup-row {
+        flex-direction: column;
+    }
+
+    .form-group label {
+        font-size: 1.5rem;
+        font-weight: 500;
+        margin-bottom: 0.4rem;
+        display: inline-block;
+    }
+
+    .form-group select, .form-group input {
+        padding: 0.9rem 0.8rem;
+        font-size: 1.2rem;
+    }
+
+    .settings-section-title {
+        font-size: 1.5rem;
+        margin-top: 1.5rem;
+        padding-bottom: 0.5rem;
+    }
+
+    h3 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .modal-actions {
+        width: 100%;
+    }
+
+    .modal-actions .action-btn.btn-add {
+        width: 100%;
+        padding: 1.2rem;
+        font-size: 1.5rem;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .preview-label {
+        font-size: 1.5rem;
+    }
+
+    .custom-select-header {
+        font-size: 1.5rem;
+    }
+    .custom-select-item {font-size: 1.5rem;}
+
+    .custom-select-arrow {
+        font-size: 1.5rem;
+    }
+
+    .range-setup-row select,
+    .range-setup-row input {
+        padding: 0.9rem 0.8rem;
+        font-size: 1.5rem;
+    }
+
+    /* Збільшуємо підписи */
+    .range-setup-row label {
+        font-size: 1.2rem;
+    }
+
+
+    .btn-remove-range {
+        right: -0.08rem;
+        top: -0.3rem;
+        border-radius: 30%;
+        width: 2.5rem;
+        height: 2.5rem;
+        font-size: 2rem;
+    }
+}
+
