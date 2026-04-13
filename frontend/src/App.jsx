@@ -5,6 +5,8 @@ import CreateModal from './components/CreateModal';
 import simulationData from './simulationData.json';
 import './App.css';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
+
 const DraggableInstrument = ({ inst, updatePosition, onOpenMenu }) => {
     const nodeRef = useRef(null);
     const pressTimer = useRef(null);
@@ -93,65 +95,81 @@ function App() {
 
     useEffect(() => {
         window.addEventListener('click', closeContextMenu);
-        const savedInstruments = localStorage.getItem('dashboard_instruments');
-        if (savedInstruments) {
-            try {
-                setInstruments(JSON.parse(savedInstruments));
-            } catch (e) {
-                console.error("Помилка читання збережених приладів", e);
-            }
-        }
+        fetch(`${API_URL}/instruments`)
+            .then(res => res.json())
+            .then(data => setInstruments(data))
+            .catch(err => console.error("Помилка завантаження приладів:", err));
+
         return () => window.removeEventListener('click', closeContextMenu);
     }, []);
 
-    const saveToLocalStorage = (newInstruments) => {
-        localStorage.setItem('dashboard_instruments', JSON.stringify(newInstruments));
-    };
-
-    const handleSaveInstrument = (formData) => {
-        let updatedInstruments;
-        if (editingInstrument) {
-            updatedInstruments = instruments.map(inst =>
-                inst.id === editingInstrument.id ? { ...inst, ...formData } : inst
-            );
-        } else {
-            const newInstrument = { ...formData, id: Date.now().toString(), x: 50, y: 50 };
-            updatedInstruments = [...instruments, newInstrument];
+    const handleSaveInstrument = async (formData) => {
+        try {
+            if (editingInstrument) {
+                const response = await fetch(`${API_URL}/instruments/${editingInstrument.id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                if (response.ok) {
+                    const updatedInst = await response.json();
+                    setInstruments(instruments.map(inst => inst.id === updatedInst.id ? updatedInst : inst));
+                }
+            } else {
+                const response = await fetch(`${API_URL}/instruments`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                if (response.ok) {
+                    const savedInstrument = await response.json();
+                    setInstruments([...instruments, savedInstrument]);
+                }
+            }
+            setIsModalOpen(false);
+            setEditingInstrument(null);
+        } catch (error) {
+            console.error("Помилка збереження:", error);
         }
-
-        setInstruments(updatedInstruments);
-        saveToLocalStorage(updatedInstruments);
-        setIsModalOpen(false);
-        setEditingInstrument(null);
     };
 
-    const updatePosition = (id, x, y) => {
-        setInstruments(prev => {
-            const updated = prev.map(inst => inst.id === id ? { ...inst, x, y } : inst);
-            saveToLocalStorage(updated);
-            return updated;
-        });
+    const updatePosition = async (id, x, y) => {
+        setInstruments(prev => prev.map(inst => inst.id === id ? { ...inst, x, y } : inst));
+
+        try {
+            await fetch(`${API_URL}/instruments/${id}/position?x=${x}&y=${y}`, {
+                method: 'PUT'
+            });
+        } catch (error) {
+            console.error("Помилка збереження позиції:", error);
+        }
     };
 
-    const clearAll = () => {
-        if (!window.confirm("Ви впевнені, що хочете видалити всі прилади?")) return;
-        setInstruments([]);
-        saveToLocalStorage([]);
-        setSimulatingIds(new Set());
-    };
-
-    const handleDeleteInstrument = () => {
+    const handleDeleteInstrument = async () => {
         const id = contextMenu.instrumentId;
-        const updatedInstruments = instruments.filter(inst => inst.id !== id);
-        setInstruments(updatedInstruments);
-        saveToLocalStorage(updatedInstruments);
+        try {
+            await fetch(`${API_URL}/instruments/${id}`, { method: 'DELETE' });
+            setInstruments(prev => prev.filter(inst => inst.id !== id));
+            setSimulatingIds(prev => {
+                const newSet = new Set(prev);
+                newSet.delete(id);
+                return newSet;
+            });
+            closeContextMenu();
+        } catch (error) {
+            console.error("Помилка видалення:", error);
+        }
+    };
 
-        setSimulatingIds(prev => {
-            const newSet = new Set(prev);
-            newSet.delete(id);
-            return newSet;
-        });
-        closeContextMenu();
+    const clearAll = async () => {
+        if (!window.confirm("Ви впевнені, що хочете видалити всі прилади?")) return;
+        try {
+            await fetch(`${API_URL}/instruments`, { method: 'DELETE' });
+            setInstruments([]);
+            setSimulatingIds(new Set());
+        } catch (error) {
+            console.error("Помилка очищення:", error);
+        }
     };
 
     const handleOpenMenu = (instrumentId, x, y) => {
