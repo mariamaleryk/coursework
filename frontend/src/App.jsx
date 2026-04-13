@@ -9,51 +9,41 @@ const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8080/api';
 
 const DraggableInstrument = ({ inst, updatePosition, onOpenMenu }) => {
     const nodeRef = useRef(null);
-    const pressTimer = useRef(null);
-    const isDragging = useRef(false);
+    const lastTap = useRef(0);
 
     const handleTouchStart = (e) => {
-        isDragging.current = false;
-        const touch = e.touches[0];
-        const clientX = touch.clientX;
-        const clientY = touch.clientY;
+        const now = Date.now();
+        const DOUBLE_TAP_DELAY = 300;
 
-        pressTimer.current = setTimeout(() => {
-            if (!isDragging.current) {
-                onOpenMenu(inst.id, clientX, clientY);
-            }
-        }, 1000);
-    };
-
-    const handleTouchEnd = () => {
-        if (pressTimer.current) clearTimeout(pressTimer.current);
-    };
-
-    const handleContextMenu = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        onOpenMenu(inst.id, e.clientX, e.clientY);
+        if (now - lastTap.current < DOUBLE_TAP_DELAY) {
+            const touch = e.touches[0];
+            onOpenMenu(inst.id, touch.clientX, touch.clientY);
+            if (e.cancelable) e.preventDefault();
+        }
+        lastTap.current = now;
     };
 
     return (
         <Draggable
             nodeRef={nodeRef}
-            distance={10}
+            distance={5}
             defaultPosition={{ x: inst.x || 0, y: inst.y || 0 }}
             bounds="parent"
-            onDrag={() => {
-                isDragging.current = true;
-                if (pressTimer.current) clearTimeout(pressTimer.current);
-            }}
             onStop={(e, data) => updatePosition(inst.id, data.x, data.y)}
         >
             <div
                 ref={nodeRef}
-                style={{ position: 'absolute', WebkitTouchCallout: 'none', userSelect: 'none', touchAction: 'none' }}
-                onContextMenu={handleContextMenu}
+                style={{
+                    position: 'absolute',
+                    touchAction: 'none',
+                    userSelect: 'none',
+                    WebkitTouchCallout: 'none'
+                }}
                 onTouchStart={handleTouchStart}
-                onTouchEnd={handleTouchEnd}
-                onTouchCancel={handleTouchEnd}
+                onContextMenu={(e) => {
+                    e.preventDefault();
+                    onOpenMenu(inst.id, e.clientX, e.clientY);
+                }}
             >
                 <InstrumentRenderer inst={inst} />
             </div>
@@ -63,7 +53,6 @@ const DraggableInstrument = ({ inst, updatePosition, onOpenMenu }) => {
 
 function App() {
     const stepIndexRef = useRef(0);
-
     const [instruments, setInstruments] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [contextMenu, setContextMenu] = useState({ visible: false, x: 0, y: 0, instrumentId: null });
@@ -71,31 +60,27 @@ function App() {
     const [theme, setTheme] = useState('dark');
     const [simulatingIds, setSimulatingIds] = useState(new Set());
 
-    useEffect(() => {
-        if (simulatingIds.size === 0 || !simulationData || simulationData.length === 0) return;
+    const [ownerId] = useState(() => {
+        let id = localStorage.getItem('my_panel_id');
+        if (!id) {
+            id = Math.random().toString(36).substring(2, 9);
+            localStorage.setItem('my_panel_id', id);
+        }
+        return id;
+    });
 
-        const interval = setInterval(() => {
-            const currentStep = simulationData[stepIndexRef.current];
-
-            setInstruments(prevInstruments => prevInstruments.map(inst => {
-                if (simulatingIds.has(inst.id) && currentStep[inst.name] !== undefined) {
-                    return { ...inst, currentValue: currentStep[inst.name] };
-                }
-                return inst;
-            }));
-
-            stepIndexRef.current++;
-            if (stepIndexRef.current >= simulationData.length) {
-                stepIndexRef.current = 0;
-            }
-        }, 1500);
-
-        return () => clearInterval(interval);
-    }, [simulatingIds]);
+    const getHeaders = () => ({
+        'Content-Type': 'application/json',
+        'X-Owner-ID': ownerId
+    });
 
     useEffect(() => {
         window.addEventListener('click', closeContextMenu);
-        fetch(`${API_URL}/instruments`)
+
+        fetch(`${API_URL}/instruments`, {
+            method: 'GET',
+            headers: getHeaders()
+        })
             .then(res => res.json())
             .then(data => setInstruments(data))
             .catch(err => console.error("Помилка завантаження приладів:", err));
@@ -105,33 +90,29 @@ function App() {
 
     const handleSaveInstrument = async (formData) => {
         try {
-            if (editingInstrument) {
-                const response = await fetch(`${API_URL}/instruments/${editingInstrument.id}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formData)
-                });
-                if (response.ok) {
-                    const updatedInst = await response.json();
-                    setInstruments(instruments.map(inst => inst.id === updatedInst.id ? updatedInst : inst));
-                }
-            } else {
-                const response = await fetch(`${API_URL}/instruments`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(formData)
-                });
-                if (response.ok) {
-                    const savedInstrument = await response.json();
-                    setInstruments([...instruments, savedInstrument]);
+            const isEdit = !!editingInstrument;
+            const url = isEdit
+                ? `${API_URL}/instruments/${editingInstrument.id}`
+                : `${API_URL}/instruments`;
+
+            const response = await fetch(url, {
+                method: isEdit ? 'PUT' : 'POST',
+                headers: getHeaders(),
+                body: JSON.stringify(formData)
+            });
+
+            if (response.ok) {
+                const savedInst = await response.json();
+                if (isEdit) {
+                    setInstruments(instruments.map(inst => inst.id === savedInst.id ? savedInst : inst));
                 } else {
-                    console.error("Бекенд повернув помилку:", await response.text());
+                    setInstruments([...instruments, savedInst]);
                 }
+                setIsModalOpen(false);
+                setEditingInstrument(null);
             }
-            setIsModalOpen(false);
-            setEditingInstrument(null);
         } catch (error) {
-            console.error("Помилка мережі:", error);
+            console.error("Помилка збереження:", error);
         }
     };
 
@@ -140,7 +121,8 @@ function App() {
 
         try {
             await fetch(`${API_URL}/instruments/${id}/position?x=${x}&y=${y}`, {
-                method: 'PUT'
+                method: 'PUT',
+                headers: getHeaders()
             });
         } catch (error) {
             console.error("Помилка збереження позиції:", error);
@@ -150,13 +132,18 @@ function App() {
     const handleDeleteInstrument = async () => {
         const id = contextMenu.instrumentId;
         try {
-            await fetch(`${API_URL}/instruments/${id}`, { method: 'DELETE' });
-            setInstruments(prev => prev.filter(inst => inst.id !== id));
-            setSimulatingIds(prev => {
-                const newSet = new Set(prev);
-                newSet.delete(id);
-                return newSet;
+            const response = await fetch(`${API_URL}/instruments/${id}`, {
+                method: 'DELETE',
+                headers: getHeaders()
             });
+            if (response.ok) {
+                setInstruments(prev => prev.filter(inst => inst.id !== id));
+                setSimulatingIds(prev => {
+                    const newSet = new Set(prev);
+                    newSet.delete(id);
+                    return newSet;
+                });
+            }
             closeContextMenu();
         } catch (error) {
             console.error("Помилка видалення:", error);
@@ -164,9 +151,12 @@ function App() {
     };
 
     const clearAll = async () => {
-        if (!window.confirm("Ви впевнені, що хочете видалити всі прилади?")) return;
+        if (!window.confirm("Ви впевнені, що хочете видалити всі ВЛАДНІ прилади?")) return;
         try {
-            await fetch(`${API_URL}/instruments`, { method: 'DELETE' });
+            await fetch(`${API_URL}/instruments`, {
+                method: 'DELETE',
+                headers: getHeaders()
+            });
             setInstruments([]);
             setSimulatingIds(new Set());
         } catch (error) {
@@ -174,28 +164,29 @@ function App() {
         }
     };
 
-    const handleOpenMenu = (instrumentId, x, y) => {
-        setContextMenu({ visible: true, x, y, instrumentId });
-    };
+    useEffect(() => {
+        if (simulatingIds.size === 0 || !simulationData || simulationData.length === 0) return;
+        const interval = setInterval(() => {
+            const currentStep = simulationData[stepIndexRef.current];
+            setInstruments(prevInstruments => prevInstruments.map(inst => {
+                if (simulatingIds.has(inst.id) && currentStep[inst.name] !== undefined) {
+                    return { ...inst, currentValue: currentStep[inst.name] };
+                }
+                return inst;
+            }));
+            stepIndexRef.current = (stepIndexRef.current + 1) % simulationData.length;
+        }, 1500);
+        return () => clearInterval(interval);
+    }, [simulatingIds]);
 
-    const closeContextMenu = () => {
-        setContextMenu({ visible: false, x: 0, y: 0, instrumentId: null });
-    };
-
+    const handleOpenMenu = (instrumentId, x, y) => setContextMenu({ visible: true, x, y, instrumentId });
+    const closeContextMenu = () => setContextMenu({ visible: false, x: 0, y: 0, instrumentId: null });
     const handleEditClick = () => {
         const instToEdit = instruments.find(inst => inst.id === contextMenu.instrumentId);
-        if (instToEdit) {
-            setEditingInstrument(instToEdit);
-            setIsModalOpen(true);
-        }
+        if (instToEdit) { setEditingInstrument(instToEdit); setIsModalOpen(true); }
         closeContextMenu();
     };
-
-    const openCreateModal = () => {
-        setEditingInstrument(null);
-        setIsModalOpen(true);
-    };
-
+    const openCreateModal = () => { setEditingInstrument(null); setIsModalOpen(true); };
     const handleToggleSimulation = () => {
         const id = contextMenu.instrumentId;
         setSimulatingIds(prev => {
@@ -206,8 +197,7 @@ function App() {
         });
         closeContextMenu();
     };
-
-    const toggleTheme = () => { setTheme(prev => prev === 'dark' ? 'light' : 'dark'); };
+    const toggleTheme = () => setTheme(prev => prev === 'dark' ? 'light' : 'dark');
 
     const activeContextInst = instruments.find(inst => inst.id === contextMenu.instrumentId);
 
@@ -216,7 +206,7 @@ function App() {
             <header className="dashboard-header">
                 <div className="header-title">Віртуальна панель приладів</div>
                 <div className="header-controls">
-                    <button className="theme-toggle" onClick={toggleTheme} title="Змінити тему">
+                    <button className="theme-toggle" onClick={toggleTheme}>
                         {theme === 'dark' ? '☀️' : '🌙'}
                     </button>
                     <button className="action-btn btn-add" onClick={openCreateModal}>Додати прилад</button>
@@ -230,14 +220,10 @@ function App() {
                 ) : (
                     instruments.map(inst => {
                         let displayInst = { ...inst };
-
                         if (inst.type === 'WARNING_BOARD' && inst.linkedInstrumentId) {
                             const sourceInst = instruments.find(i => String(i.id) === String(inst.linkedInstrumentId));
-                            if (sourceInst) {
-                                displayInst.currentValue = sourceInst.currentValue;
-                            }
+                            if (sourceInst) displayInst.currentValue = sourceInst.currentValue;
                         }
-
                         return (
                             <DraggableInstrument
                                 key={displayInst.id}

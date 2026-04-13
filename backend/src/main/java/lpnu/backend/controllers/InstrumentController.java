@@ -3,12 +3,10 @@ package lpnu.backend.controllers;
 import lpnu.backend.models.Instrument;
 import lpnu.backend.services.InstrumentService;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/instruments")
-@CrossOrigin(origins = {"http://localhost:5173","http://localhost:5174", "https://virtual-instrument-panel.netlify.app"})
 public class InstrumentController {
 
     private final InstrumentService service;
@@ -18,12 +16,13 @@ public class InstrumentController {
     }
 
     @GetMapping
-    public List<Instrument> getAll() {
-        return service.getAllInstruments();
+    public List<Instrument> getAll(@RequestHeader("X-Owner-ID") String ownerId) {
+        return service.getAllByOwner(ownerId);
     }
 
     @PostMapping
-    public Instrument create(@RequestBody Instrument instrument) {
+    public Instrument create(@RequestBody Instrument instrument, @RequestHeader("X-Owner-ID") String ownerId) {
+        instrument.setOwnerId(ownerId);
         return service.addInstrument(instrument);
     }
 
@@ -33,8 +32,13 @@ public class InstrumentController {
     }
 
     @DeleteMapping
-    public void deleteAll() {
-        service.clearAll();
+    public void deleteAll(@RequestHeader("X-Owner-ID") String ownerId) {
+        service.clearByOwner(ownerId);
+    }
+
+    @PutMapping("/{id}")
+    public Instrument update(@PathVariable String id, @RequestBody Instrument instrument) {
+        return service.updateInstrument(id, instrument);
     }
 
     @PutMapping("/{id}/position")

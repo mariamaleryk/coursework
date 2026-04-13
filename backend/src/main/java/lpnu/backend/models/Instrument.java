@@ -22,7 +22,7 @@ public abstract class Instrument {
     private String name;
     private int x;
     private int y;
-
+    private String ownerId;
     private String size = "medium";
     private String colorTheme = "light";
     private String fontFamily = "standard";
@@ -44,7 +44,8 @@ public abstract class Instrument {
         this.x = 50;
         this.y = 50;
     }
-
+    public String getOwnerId() { return ownerId; }
+    public void setOwnerId(String ownerId) { this.ownerId = ownerId; }
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
     public String getName() { return name; }
