@@ -5,7 +5,7 @@ import java.util.Objects;
 public class DigitalDisplay extends Instrument {
     private String fontFamily;
     private String unit;
-    private double currentValue; // Додай це, якщо хочеш показувати число
+    private double currentValue;
 
     public DigitalDisplay() {
         super();

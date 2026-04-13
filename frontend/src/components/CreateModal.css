@@ -33,7 +33,10 @@
     opacity: 0.5; cursor: pointer; line-height: 1;
     transition: all 0.2s ease; z-index: 10;
 }
-.close-button:hover { opacity: 1; color: var(--danger-main); }
+.close-button:hover {
+    opacity: 1;
+    color: var(--danger-main);
+}
 
 .modal-body-split {
     display: flex;
@@ -74,23 +77,34 @@
     color: var(--text-main);
     border: var(--border-thin) solid var(--panel-border);
     border-radius: var(--radius-sm);
-    font-family: inherit; outline: none; width: 100%;
+    font-family: inherit;
+    outline: none;
+    width: 100%;
 }
 .form-group select:focus, .form-group input:focus { border-color: var(--accent-main); }
 
 .settings-section-title {
-    font-size: 0.9rem; font-weight: bold; color: var(--text-muted);
-    margin-top: 1rem; border-bottom: var(--border-thin) solid var(--panel-border); padding-bottom: 0.3rem;
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: var(--text-muted);
+    margin-top: 1rem;
+    border-bottom: var(--border-thin) solid var(--panel-border);
+    padding-bottom: 0.3rem;
 }
 
 .preview-label {
-    position: absolute; top: 1rem; left: 1rem;
-    font-size: 0.8rem; color: var(--text-muted); font-weight: bold; text-transform: uppercase;
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: bold;
+    text-transform: uppercase;
 }
 
 
 .range-setup-card {
-    background-color: var(--panel-bg); /* Такий самий напівпрозорий фон, як у всього вікна */
+    background-color: var(--panel-bg);
     border: var(--border-thin) solid var(--panel-border);
     border-radius: var(--radius-md);
     padding: 1.5rem 1rem 1rem 1rem;
@@ -117,11 +131,10 @@
     min-width: 0;
 }
 
-/* === РОБИМО ІНПУТИ ТАКИМИ Ж, ЯК І ВСІ ІНШІ === */
 .range-setup-row select,
 .range-setup-row input {
     padding: 0.6rem;
-    background-color: var(--bg-color); /* Темний фон */
+    background-color: var(--bg-color);
     color: var(--text-main);
     border: var(--border-thin) solid var(--panel-border);
     border-radius: var(--radius-sm);
@@ -131,15 +144,15 @@
 }
 .range-setup-row select option,
 .form-group select option {
-    font-size: 1rem !important; /* Примусово повертаємо нормальний розмір тексту */
-    background-color: var(--bg-color); /* Зберігаємо темний фон */
-    color: var(--text-main); /* Зберігаємо світлий текст */
-    padding: 0.5rem; /* Додаємо трохи простору між рядками */
+    font-size: 1rem !important;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    padding: 0.5rem;
 }
 
 .range-setup-row select:focus,
 .range-setup-row input:focus {
-    border-color: var(--accent-main); /* Фіолетова рамка при кліку */
+    border-color: var(--accent-main);
 }
 
 .range-setup-row label {
@@ -149,7 +162,6 @@
     text-transform: uppercase;
 }
 
-/* Червоний хрестик видалення */
 .btn-remove-range {
     position: absolute;
     top: -0.8rem;
@@ -176,11 +188,10 @@
     background: #ff0000;
 }
 
-
 .form-group select option {
-    background-color: var(--bg-color); /* Задаємо суцільний темний фон (без прозорості) */
-    color: var(--text-main);           /* Світлий текст */
-    padding: 10px;                     /* Додаємо відступи (працює не в усіх браузерах, але допомагає) */
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    padding: 10px;
     font-size: 1rem;
 }
 
@@ -188,17 +199,13 @@
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    /* Додаємо свою кастомну стрілочку, бо стандартну ми щойно прибрали */
     background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23a855f7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
     background-repeat: no-repeat;
     background-position: right 1rem center;
     background-size: 1em;
-    padding-right: 2.5rem; /* Місце для нашої нової стрілочки */
+    padding-right: 2.5rem;
 }
 
-/* =========================================================
-   СТИЛІ ДЛЯ ПОВЗУНКА (Кросбраузерні)
-   ========================================================= */
 
 input[type=range].styled-slider {
     -webkit-appearance: none;
@@ -207,18 +214,15 @@ input[type=range].styled-slider {
     background: transparent;
     cursor: pointer;
     accent-color: var(--accent-main);
-
-    /* ДОДАНІ РЯДКИ: вбиваємо рамки і відступи від звичайних інпутів */
     padding: 0 !important;
     border: none !important;
-    margin: 0.5rem 0; /* Трохи місця зверху і знизу */
+    margin: 0.5rem 0;
 }
 
 input[type=range].styled-slider:focus {
     outline: none;
 }
 
-/* --- Для Chrome, Safari, Edge --- */
 input[type=range].styled-slider::-webkit-slider-runnable-track {
     width: 100%;
     height: 0.5rem;
@@ -232,7 +236,7 @@ input[type=range].styled-slider::-webkit-slider-thumb {
     width: 1.2rem;
     border-radius: 50%;
     background: var(--accent-main);
-    border: 0.15rem solid var(--text-main); /* Зробила обідок кольору тексту, щоб було контрастніше */
+    border: 0.15rem solid var(--text-main);
     margin-top: -0.35rem;
     transition: transform 0.2s;
 }
@@ -241,7 +245,6 @@ input[type=range].styled-slider:hover::-webkit-slider-thumb {
     transform: scale(1.15);
 }
 
-/* --- Для Firefox --- */
 input[type=range].styled-slider::-moz-range-track {
     width: 100%;
     height: 0.5rem;
@@ -269,20 +272,6 @@ input[type=range].styled-slider:hover::-moz-range-thumb {
     user-select: none;
 }
 
-/*.custom-select-header {*/
-/*    padding: 0.9rem 0.8rem;*/
-/*    background-color: var(--panel-bg);*/
-/*    border: var(--border-thin) solid var(--panel-border);*/
-/*    border-radius: var(--radius-sm);*/
-/*    color: var(--text-main);*/
-/*    cursor: pointer;*/
-/*    display: flex;*/
-/*    justify-content: space-between;*/
-/*    align-items: center;*/
-/*    font-size: 1.1rem;*/
-/*    transition: border-color 0.3s;*/
-/*}*/
-
 .custom-select-header:hover {
     border-color: var(--accent-main);
 }
@@ -298,8 +287,8 @@ input[type=range].styled-slider:hover::-moz-range-thumb {
 }
 
 .custom-select-header {
-    padding: 0.6rem 0.8rem; /* Зменшили відступи до стандартних */
-    background-color: var(--bg-color); /* Зробили фон як у всіх інпутів */
+    padding: 0.6rem 0.8rem;
+    background-color: var(--bg-color);
     border: var(--border-thin) solid var(--panel-border);
     border-radius: var(--radius-sm);
     color: var(--text-main);
@@ -307,16 +296,16 @@ input[type=range].styled-slider:hover::-moz-range-thumb {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 1rem; /* Стандартний десктопний шрифт */
+    font-size: 1rem;
     transition: border-color 0.3s;
 }
 
 .custom-select-item {
-    padding: 0.6rem 0.8rem; /* Зменшили висоту кожного пункту */
+    padding: 0.6rem 0.8rem;
     cursor: pointer;
     color: var(--text-main);
     border-bottom: 1px solid rgba(139, 92, 246, 0.1);
-    font-size: 0.95rem; /* Акуратний розмір тексту */
+    font-size: 0.95rem;
     transition: background 0.2s;
 }
 
@@ -326,25 +315,16 @@ input[type=range].styled-slider:hover::-moz-range-thumb {
     left: 0;
     width: 100%;
     margin-top: 0.4rem;
-    background-color: var(--bg-color); /* Темний фон твоєї теми */
+    background-color: var(--bg-color);
     border: var(--border-thin) solid var(--panel-border);
     border-radius: var(--radius-sm);
     list-style: none;
     padding: 0;
     max-height: 15rem;
     overflow-y: auto;
-    z-index: 9999; /* Щоб перекривало інші поля */
+    z-index: 9999;
     box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.8);
 }
-
-/*.custom-select-item {*/
-/*    padding: 0.8rem 1rem;*/
-/*    cursor: pointer;*/
-/*    color: var(--text-main);*/
-/*    border-bottom: 1px solid rgba(139, 92, 246, 0.1);*/
-/*    font-size: 1.05rem;*/
-/*    transition: background 0.2s;*/
-/*}*/
 
 .custom-select-item:last-child {
     border-bottom: none;
@@ -448,11 +428,9 @@ input[type=range].styled-slider:hover::-moz-range-thumb {
         font-size: 1.5rem;
     }
 
-    /* Збільшуємо підписи */
     .range-setup-row label {
         font-size: 1.2rem;
     }
-
 
     .btn-remove-range {
         right: -0.08rem;

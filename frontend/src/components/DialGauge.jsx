@@ -5,7 +5,6 @@ const DialGauge = ({ name = 'Прилад', min = 0, max = 100, value = 0, unit 
     const numMin = Number(min) || 0;
     const numMax = Number(max) || 100;
 
-    // Перетворюємо px у rem (ділимо на 16)
     const numericSize = parseInt(size, 10) || 200;
     const sizeInRem = numericSize / 16;
     const scale = numericSize / 200;
@@ -69,7 +68,6 @@ const DialGauge = ({ name = 'Прилад', min = 0, max = 100, value = 0, unit 
                     <div className="gauge-container" style={{ width: '12.5rem', height: '12.5rem' }}>
                         <div className="gauge-wrapper">
                             <svg width="100%" height="100%" viewBox="0 0 200 200" style={{ pointerEvents: 'none' }}>
-                                {/*<circle cx={cx} cy={cy} r="98" fill="var(--panel-bg)" stroke="var(--panel-border)" strokeWidth="2.5" />*/}
                                 {ticks}
                                 {tickLabels}
                                 <text x="100" y="180" className="gauge-dial-unit" textAnchor="middle" fill="var(--text-main)" fillOpacity="0.5">{unit}</text>

@@ -6,9 +6,6 @@ import ColumnGauge from './ColumnGauge';
 import DigitalDisplay from './DigitalDisplay';
 import './CreateModal.css';
 
-// ============================================================================
-// БАЗА ДАНИХ ПРИЛАДІВ (Для автоматичного заповнення)
-// ============================================================================
 const PREDEFINED_INSTRUMENTS = {
     'Температура води': { unit: '°C', min: 0, max: 120 },
     'Тиск': { unit: 'bar', min: 0, max: 100 },
@@ -40,9 +37,6 @@ const nameOptions = [
     { value: 'CUSTOM', label: '✏️ Власна назва (Ввід вручну)...' }
 ];
 
-// ============================================================================
-// КАСТОМНИЙ СПИСОК
-// ============================================================================
 const CustomSelect = ({ name, value, options, onChange }) => {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
@@ -110,7 +104,6 @@ const CreateModal = ({ isOpen, onClose, onSave, editingInstrument, availableInst
     const [formData, setFormData] = useState(defaultState);
     const [rangeError, setRangeError] = useState(null);
 
-    // Доступні прилади для підв'язки табла
     const dialGauges = availableInstruments.filter(inst => inst.type !== 'WARNING_BOARD');
 
     useEffect(() => {
@@ -156,7 +149,6 @@ const CreateModal = ({ isOpen, onClose, onSave, editingInstrument, availableInst
     const handleChange = (e) => {
         const { name, value } = e.target;
 
-        // 1. Якщо змінюємо ТИП приладу на Табло
         if (name === 'type') {
             setFormData(prev => {
                 const updates = { type: value };
@@ -170,7 +162,6 @@ const CreateModal = ({ isOpen, onClose, onSave, editingInstrument, availableInst
             return;
         }
 
-        // 2. Якщо підв'язуємо табло до якогось приладу
         if (name === 'linkedInstrumentId') {
             setFormData(prev => {
                 let newName = 'Табло попереджень';
@@ -189,7 +180,6 @@ const CreateModal = ({ isOpen, onClose, onSave, editingInstrument, availableInst
         setFormData(prev => ({ ...prev, [name]: parsedValue }));
     };
 
-    // ОБРОБНИК ДЛЯ РОЗУМНОГО СПИСКУ НАЗВ (Тільки для звичайних приладів)
     const handleNameSelect = (e) => {
         const val = e.target.value;
         if (val === 'CUSTOM') {
@@ -270,12 +260,10 @@ const CreateModal = ({ isOpen, onClose, onSave, editingInstrument, availableInst
 
                         <div className="settings-section-title">Загальні параметри</div>
 
-                        {/* ЛОГІКА ДЛЯ НАЗВИ */}
                         <div className="form-group">
                             <label>{formData.type === 'WARNING_BOARD' ? 'Назва табла:' : 'Назва приладу (Джерело даних):'}</label>
 
                             {formData.type === 'WARNING_BOARD' ? (
-                                /* Якщо це Табло - показуємо звичайний інпут */
                                 <input
                                     type="text"
                                     name="name"
@@ -283,7 +271,6 @@ const CreateModal = ({ isOpen, onClose, onSave, editingInstrument, availableInst
                                     onChange={handleChange}
                                 />
                             ) : (
-                                /* Якщо це звичайний прилад - показуємо розумний список */
                                 <>
                                     <CustomSelect
                                         name="namePreset"

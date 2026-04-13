@@ -10,7 +10,6 @@ public class ColumnGauge extends Instrument {
         super();
     }
 
-    // Геттери та сеттери
     public double getMin() { return min; }
     public void setMin(double min) { this.min = min; }
 

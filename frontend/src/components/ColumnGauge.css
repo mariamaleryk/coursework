@@ -77,10 +77,10 @@
     width: 2.2rem;
     height: 2.2rem;
     background: radial-gradient(circle at 35% 35%, #d946ef, #a855f7, #5b21b6);
-    border-radius: 50%; /* ЖОРСТКЕ ЗАОКРУГЛЕННЯ, щоб не було квадратів! */
+    border-radius: 50%;
     border: var(--border-thin) solid var(--panel-border);
     margin-top: -0.4rem;
-    box-shadow: 0 0.25rem 1rem rgba(168, 85, 247, 0.5); /* Повернули тінь колбі */
+    box-shadow: 0 0.25rem 1rem rgba(168, 85, 247, 0.5);
     z-index: 3;
 }
 

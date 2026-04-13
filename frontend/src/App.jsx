@@ -8,30 +8,25 @@ import './App.css';
 const DraggableInstrument = ({ inst, updatePosition, onOpenMenu }) => {
     const nodeRef = useRef(null);
     const pressTimer = useRef(null);
-    const isDragging = useRef(false); // Слідкуємо, чи прилад дійсно тягнуть
+    const isDragging = useRef(false);
 
-    // Початок дотику (для телефонів)
     const handleTouchStart = (e) => {
         isDragging.current = false;
         const touch = e.touches[0];
         const clientX = touch.clientX;
         const clientY = touch.clientY;
 
-        // Запускаємо таймер на пів секунди (затримка)
         pressTimer.current = setTimeout(() => {
-            // Якщо за цей час ми не почали тягнути прилад - відкриваємо меню!
             if (!isDragging.current) {
                 onOpenMenu(inst.id, clientX, clientY);
             }
-        }, 500); // 500 мілісекунд = 0.5 сек
+        }, 1000);
     };
 
-    // Якщо відпустили палець раніше - скасовуємо таймер
     const handleTouchEnd = () => {
         if (pressTimer.current) clearTimeout(pressTimer.current);
     };
 
-    // Правий клік (для комп'ютерів)
     const handleContextMenu = (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -41,10 +36,10 @@ const DraggableInstrument = ({ inst, updatePosition, onOpenMenu }) => {
     return (
         <Draggable
             nodeRef={nodeRef}
+            distance={10}
             defaultPosition={{ x: inst.x || 0, y: inst.y || 0 }}
             bounds="parent"
             onDrag={() => {
-                // Магія тут: якщо прилад реально потягнули, ми блокуємо відкриття меню
                 isDragging.current = true;
                 if (pressTimer.current) clearTimeout(pressTimer.current);
             }}
@@ -74,7 +69,6 @@ function App() {
     const [theme, setTheme] = useState('dark');
     const [simulatingIds, setSimulatingIds] = useState(new Set());
 
-    // Головний двигун симуляції
     useEffect(() => {
         if (simulatingIds.size === 0 || !simulationData || simulationData.length === 0) return;
 
@@ -97,7 +91,6 @@ function App() {
         return () => clearInterval(interval);
     }, [simulatingIds]);
 
-    // ЗАВАНТАЖЕННЯ ДАНИХ З ПАМ'ЯТІ БРАУЗЕРА
     useEffect(() => {
         window.addEventListener('click', closeContextMenu);
         const savedInstruments = localStorage.getItem('dashboard_instruments');
@@ -111,7 +104,6 @@ function App() {
         return () => window.removeEventListener('click', closeContextMenu);
     }, []);
 
-    // ЗБЕРЕЖЕННЯ ДАНИХ В ПАМ'ЯТЬ БРАУЗЕРА
     const saveToLocalStorage = (newInstruments) => {
         localStorage.setItem('dashboard_instruments', JSON.stringify(newInstruments));
     };
@@ -162,7 +154,6 @@ function App() {
         closeContextMenu();
     };
 
-    // ЄДИНА ФУНКЦІЯ ДЛЯ ВІДКРИТТЯ МЕНЮ (з компа та телефону)
     const handleOpenMenu = (instrumentId, x, y) => {
         setContextMenu({ visible: true, x, y, instrumentId });
     };
