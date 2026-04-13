@@ -124,12 +124,14 @@ function App() {
                 if (response.ok) {
                     const savedInstrument = await response.json();
                     setInstruments([...instruments, savedInstrument]);
+                } else {
+                    console.error("Бекенд повернув помилку:", await response.text());
                 }
             }
             setIsModalOpen(false);
             setEditingInstrument(null);
         } catch (error) {
-            console.error("Помилка збереження:", error);
+            console.error("Помилка мережі:", error);
         }
     };
 

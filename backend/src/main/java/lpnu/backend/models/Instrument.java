@@ -1,5 +1,6 @@
 package lpnu.backend.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -15,6 +16,7 @@ import java.util.UUID;
         @JsonSubTypes.Type(value = ColumnGauge.class, name = "COLUMN_GAUGE"),
         @JsonSubTypes.Type(value = DigitalDisplay.class, name = "DIGITAL_DISPLAY")
 })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class Instrument {
     private String id;
     private String name;

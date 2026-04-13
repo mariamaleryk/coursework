@@ -8,7 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/instruments")
-@CrossOrigin(origins = {"http://localhost:5173", "https://virtual-instrument-panel.netlify.app"})
+@CrossOrigin(origins = {"http://localhost:5173","http://localhost:5174", "https://virtual-instrument-panel.netlify.app"})
 public class InstrumentController {
 
     private final InstrumentService service;
